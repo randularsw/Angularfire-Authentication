@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "test-d5ed6": {
+      "hosting": {
+        "OnlineShoppingCart": [
+          "test-d5ed6"
+        ]
+      }
+    }
+  }
+}
