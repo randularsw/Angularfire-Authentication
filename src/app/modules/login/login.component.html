@@ -1,6 +1,6 @@
-<div *ngIf="auth.user | async as user; else showLogin">
-    <p>Hello {{ user | json }}!</p>
-    <p>{{uid}}</p>
+<div *ngIf="user; else showLogin">
+    <!-- <p>Hello {{ authService.user.email }}!</p> -->
+    <p>{{(authService.user | async)?.uid}}</p>
     <button (click)="logout()">Logout</button>
 </div>
 <ng-template #showLogin>

@@ -12,27 +12,22 @@ import { map } from 'rxjs/operators';
 export class LoginComponent implements OnInit {
   email: string;
   password: string;
-  uid;
-  
-  constructor(public auth: AngularFireAuth, private authService:AuthService) {
+  user;
+
+  constructor(public authService: AuthService) {
   }
 
   ngOnInit() {
     this.authService.getCurrentUser();
-  }
-
-  getCurrentUser() {
-    let user = this.auth.onAuthStateChanged((user) => {
+    this.authService.user.subscribe(user => {
       if (user) {
         console.log(user.uid);
-        console.log(user.email);
-        console.log(user.displayName);  
-        console.log(user.photoURL);
-        console.log(user.providerData);
-      } else {
-        console.log('No user logged in');
+        this.user = user;
       }
-    });
+    },
+      err => {
+        console.log(err);
+      });
   }
 
   login() {
@@ -40,19 +35,20 @@ export class LoginComponent implements OnInit {
   }
   logout() {
     this.authService.SignOut();
+    this.user=null;
   }
 
 
 
   signUp() {
     this.authService.SignUp(this.email, this.password);
-    this.email = ''; 
+    this.email = '';
     this.password = '';
   }
 
   signIn() {
     this.authService.SignIn(this.email, this.password);
-    this.email = ''; 
+    this.email = '';
     this.password = '';
   }
 

@@ -4,26 +4,26 @@ import 'firebase/firestore';
 import { auth } from 'firebase/app';
 
 import { AngularFireAuth } from "@angular/fire/auth";
-import { Observable } from 'rxjs';
+import { Observable,of } from 'rxjs';
+import { User } from './models/user';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  userData: Observable<firebase.User>;
+  user: Observable<User>;
 
-  constructor(private afAuth: AngularFireAuth) {
+  constructor(private afAuth: AngularFireAuth, private db: AngularFirestore) {
+    this.user = afAuth.authState;
   }
 
   getCurrentUser() {
-    let user = this.afAuth.onAuthStateChanged((user) => {
+    this.afAuth.onAuthStateChanged(function(user) {
       if (user) {
-        console.log(user.email);
-        console.log(user.displayName);
-        console.log(user.uid);
-        console.log(user.providerData);
-        console.log(user.photoURL);
+        
+        // console.log(user.uid);
+        return this.user;
       } else {
         console.log('No user logged in');
       }
@@ -32,8 +32,17 @@ export class AuthService {
 
   // google
   login() {
-    this.afAuth.signInWithPopup(new auth.GoogleAuthProvider()).then(user=>{
-      // console.log(user);
+    this.afAuth.signInWithPopup(new auth.GoogleAuthProvider()).then(cred=>{
+      if(cred.user){
+        console.log('logged in user id',cred.user.uid);
+        this.db.collection('users').doc(cred.user.uid).valueChanges().subscribe(x=>{
+          console.log('user in the db',x);
+          if(!x){
+            // user not in the db create new user
+            this.db.collection('users').doc(cred.user.uid).set({emailkkk: cred.user.email});
+          }
+        });
+      }
     });
   }
 
