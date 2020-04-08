@@ -18,7 +18,6 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.authService.getCurrentUser();
     this.authService.user.subscribe(user => {
       if (user) {
         console.log(user.uid);

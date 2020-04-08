@@ -18,18 +18,6 @@ export class AuthService {
     this.user = afAuth.authState;
   }
 
-  getCurrentUser() {
-    this.afAuth.onAuthStateChanged(function(user) {
-      if (user) {
-        
-        // console.log(user.uid);
-        return this.user;
-      } else {
-        console.log('No user logged in');
-      }
-    });
-  }
-
   // google
   login() {
     this.afAuth.signInWithPopup(new auth.GoogleAuthProvider()).then(cred=>{
