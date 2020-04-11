@@ -5,6 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatModule } from './core/mat/mat.module';
+import { FormsModule } from '@angular/forms';
 
 import { AngularFireModule } from '@angular/fire';
 import { environment } from '../environments/environment';
@@ -27,7 +28,8 @@ import { LoginComponent } from './modules/login/login.component';
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireAnalyticsModule,
     AngularFirestoreModule,
-    AngularFireAuthModule
+    AngularFireAuthModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

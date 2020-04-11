@@ -1,14 +1,77 @@
-<div *ngIf="user; else showLogin">
-    <!-- <p>Hello {{ authService.user.email }}!</p> -->
-    <p>{{(user)?.uid}}</p>
-    <button (click)="logout()">Logout</button>
+<div *ngIf="!user" class="container-fluid">
+  <div class="container">
+    <h2 class="text-center" id="title">Angularfire Authentication</h2>
+    <hr />
+    <div class="row">
+      <div class="col-md-5">
+        <form #registerForm="ngForm" (ngSubmit)="register()">
+            <p class="text-uppercase pull-center">SIGN UP</p>
+            <div class="form-group">
+              <input
+                type="text"
+                name="name"
+                id="name"
+                class="form-control input-lg"
+                placeholder="Full Name"
+                [(ngModel)]="regModel.name"
+              />
+            </div>
+
+            <div class="form-group">
+              <input
+                type="email"
+                name="email"
+                id="email"
+                class="form-control input-lg"
+                placeholder="Email Address"
+                [(ngModel)]="regModel.email"
+              />
+            </div>
+            <div class="form-group">
+              <input
+                type="password"
+                name="password"
+                id="password"
+                class="form-control input-lg"
+                placeholder="Password"
+                [(ngModel)]="regModel.password"
+              />
+            </div>
+            <div>
+              <button class="btn btn-success" type="submit">Register</button>
+            </div>
+        </form>
+      </div>
+
+      <div class="col-md-5">
+        <form #loginForm="ngForm" (ngSubmit)="login()">
+            <p class="text-uppercase">Login with account</p>
+
+            <div class="form-group">
+              <input
+                type="email"
+                name="login-email"
+                class="form-control input-lg"
+                placeholder="Email"
+                [(ngModel)]="loginModel.email"
+              />
+            </div>
+            <div class="form-group">
+              <input
+                type="password"
+                name="login-password"
+                class="form-control input-lg"
+                placeholder="Password"
+                [(ngModel)]="loginModel.password"
+              />
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+      </div>
+      <div class="col-md-2">
+        <p class="text-uppercase">Login with Google</p>
+        <button (click)="loginWithGoogle()" class="btn btn-danger">Google</button>
+      </div>
+    </div>
+  </div>
 </div>
-<ng-template #showLogin>
-    <p>Please login.</p>
-    <button (click)="login()">Login with Google</button>
-</ng-template>
-
-<br><br><br>
-
-<button (click)="signUp()">Normal signup</button>
-<button (click)="signIn()">Normal signin</button>

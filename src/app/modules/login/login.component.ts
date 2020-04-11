@@ -3,6 +3,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { auth } from 'firebase/app';
 import { AuthService } from 'src/app/core/auth.service';
 import { map } from 'rxjs/operators';
+import { User } from 'src/app/core/models/user';
 
 @Component({
   selector: 'app-login',
@@ -10,9 +11,9 @@ import { map } from 'rxjs/operators';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-  email: string;
-  password: string;
   user;
+  loginModel = new User();
+  regModel = new User();
 
   constructor(public authService: AuthService) {
   }
@@ -29,30 +30,20 @@ export class LoginComponent implements OnInit {
       });
   }
 
-  login() {
+  loginWithGoogle() {
     this.authService.login();
   }
+
+  register() {
+    this.authService.SignUp(this.regModel.email, this.regModel.password);
+  }
+
+  login() {
+    this.authService.SignIn(this.loginModel.email, this.loginModel.password);
+  }
+
   logout() {
     this.authService.SignOut();
     this.user=null;
   }
-
-
-
-  signUp() {
-    this.authService.SignUp(this.email, this.password);
-    this.email = '';
-    this.password = '';
-  }
-
-  signIn() {
-    this.authService.SignIn(this.email, this.password);
-    this.email = '';
-    this.password = '';
-  }
-
-  signOut() {
-    this.authService.SignOut();
-  }
-
 }

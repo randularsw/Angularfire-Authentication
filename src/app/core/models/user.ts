@@ -1,5 +1,9 @@
 export class User {
-    uid: string
+    // uid: String;
+    name: string;
+    email: string;
+    password: string;
+    photo: string;
 
     constructor() {
     }
