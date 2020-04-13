@@ -11,7 +11,7 @@ import { User } from 'src/app/core/models/user';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-  user;
+  // user;
   loginModel = new User();
   regModel = new User();
 
@@ -19,31 +19,31 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.authService.user.subscribe(user => {
-      if (user) {
-        console.log(user.uid);
-        this.user = user;
-      }
-    },
-      err => {
-        console.log(err);
-      });
+    // this.authService.user.subscribe(user => {
+    //   if (user) {
+    //     console.log(user.uid);
+    //     this.user = user;
+    //   }
+    // },
+    //   err => {
+    //     console.log(err);
+    //   });
   }
 
-  loginWithGoogle() {
-    this.authService.login();
+  onGoogleLogin() {
+    this.authService.googleLogin();
   }
 
-  register() {
-    this.authService.SignUp(this.regModel.email, this.regModel.password);
+  onRegister() {
+    this.authService.register(this.regModel);
+    
   }
 
-  login() {
-    this.authService.SignIn(this.loginModel.email, this.loginModel.password);
+  onLogin() {
+    this.authService.login(this.loginModel);
   }
 
-  logout() {
-    this.authService.SignOut();
-    this.user=null;
+  onLogout() {
+    this.authService.logout();
   }
 }

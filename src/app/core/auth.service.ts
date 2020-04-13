@@ -4,21 +4,39 @@ import "firebase/firestore";
 import { auth } from "firebase/app";
 
 import { AngularFireAuth } from "@angular/fire/auth";
-import { Observable, of } from "rxjs";
-import { User } from "./models/user";
+import { Observable } from "rxjs";
 
 @Injectable({
   providedIn: "root",
 })
 export class AuthService {
-  user: Observable<any>;
+  // user: Observable<any>;
+  user;
 
   constructor(private afAuth: AngularFireAuth, private db: AngularFirestore) {
-    this.user = afAuth.authState;
+    // this.user = afAuth.authState;
+    afAuth.authState.subscribe(
+      (user) => {
+        if (user) {
+          this.db
+            .collection("users")
+            .doc(user.uid)
+            .valueChanges()
+            .subscribe((x) => {
+              if (x) {
+                this.user = x;
+              }
+            });
+        }
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
   }
 
   // google
-  login() {
+  googleLogin() {
     this.afAuth.signInWithPopup(new auth.GoogleAuthProvider()).then((cred) => {
       if (cred.user) {
         console.log("logged in user id", cred.user.uid);
@@ -33,7 +51,6 @@ export class AuthService {
               this.db.collection("users").doc(cred.user.uid).set({
                 name: cred.user.displayName,
                 email: cred.user.email,
-                photo: cred.user.photoURL
               });
             }
           });
@@ -42,32 +59,45 @@ export class AuthService {
   }
 
   /* Sign up */
-  SignUp(email: string, password: string) {
+  register(userDetails) {
     this.afAuth
-      .createUserWithEmailAndPassword(email, password)
-      .then((res) => {
-        console.log("Successfully signed up!", res);
-      })
-      .catch((error) => {
-        console.log("Something is wrong:", error.message);
+      .createUserWithEmailAndPassword(userDetails.email, userDetails.password)
+      .then((cred) => {
+        if (cred.user) {
+          console.log("logged in user id", cred.user.uid);
+          this.db
+            .collection("users")
+            .doc(cred.user.uid)
+            .valueChanges()
+            .subscribe((x) => {
+              console.log("user in the db", x);
+              if (!x) {
+                // user not in the db -> create new user
+                this.db.collection("users").doc(cred.user.uid).set({
+                  name: userDetails.name,
+                  email: cred.user.email,
+                });
+              }
+            });
+        }
       });
   }
 
   /* Sign in */
-  SignIn(email: string, password: string) {
+  login(userDetails) {
     this.afAuth
-      .signInWithEmailAndPassword(email, password)
+      .signInWithEmailAndPassword(userDetails.email, userDetails.password)
       .then((res) => {
-        console.log("Successfully signed in!");
-        console.log(res);
+        return res;
       })
       .catch((err) => {
-        console.log("Something is wrong:", err.message);
+        return err;
       });
   }
 
   /* Sign out */
-  SignOut() {
+  logout() {
     this.afAuth.signOut();
+    this.user = null;
   }
 }
